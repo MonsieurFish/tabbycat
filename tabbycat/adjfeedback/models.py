@@ -37,7 +37,7 @@ class AdjudicatorFeedbackAnswer(models.Model):
         unique_together = [('question', 'feedback')]
 
 
-class AdjudicatorFeedbackBooleanAnswer(AdjudicatorFeedbackAnswer):
+class BooleanAnswerMixin:
     ANSWER_TYPE = bool
 
     # Note: by convention, if no answer is chosen for a boolean answer, an
@@ -45,43 +45,56 @@ class AdjudicatorFeedbackBooleanAnswer(AdjudicatorFeedbackAnswer):
     # for a NullBooleanField.
     answer = models.BooleanField(verbose_name=_("answer"))
 
+
+class IntegerAnswerMixin:
+    ANSWER_TYPE = int
+    answer = models.IntegerField(verbose_name=_("answer"))
+
+
+class FloatAnswerMixin:
+    ANSWER_TYPE = float
+    answer = models.FloatField(verbose_name=_("answer"))
+
+
+class StringAnswerMixin:
+    ANSWER_TYPE = str
+    answer = models.TextField(verbose_name=_("answer"))
+
+
+class ArrayAnswerMixin:
+    ANSWER_TYPE = list
+    answer = ArrayField(base_field=models.TextField(), verbose_name=_("answer"))
+
+
+class AdjudicatorFeedbackBooleanAnswer(BooleanAnswerMixin, AdjudicatorFeedbackAnswer):
+
     class Meta(AdjudicatorFeedbackAnswer.Meta):
         verbose_name = _("adjudicator feedback boolean answer")
         verbose_name_plural = _("adjudicator feedback boolean answers")
 
 
-class AdjudicatorFeedbackIntegerAnswer(AdjudicatorFeedbackAnswer):
-    ANSWER_TYPE = int
-
-    answer = models.IntegerField(verbose_name=_("answer"))
+class AdjudicatorFeedbackIntegerAnswer(IntegerAnswerMixin, AdjudicatorFeedbackAnswer):
 
     class Meta(AdjudicatorFeedbackAnswer.Meta):
         verbose_name = _("adjudicator feedback integer answer")
         verbose_name_plural = _("adjudicator feedback integer answers")
 
 
-class AdjudicatorFeedbackFloatAnswer(AdjudicatorFeedbackAnswer):
-    ANSWER_TYPE = float
-
-    answer = models.FloatField(verbose_name=_("answer"))
+class AdjudicatorFeedbackFloatAnswer(FloatAnswerMixin, AdjudicatorFeedbackAnswer):
 
     class Meta(AdjudicatorFeedbackAnswer.Meta):
         verbose_name = _("adjudicator feedback float answer")
         verbose_name_plural = _("adjudicator feedback float answers")
 
 
-class AdjudicatorFeedbackStringAnswer(AdjudicatorFeedbackAnswer):
-    ANSWER_TYPE = str
-    answer = models.TextField(verbose_name=_("answer"))
+class AdjudicatorFeedbackStringAnswer(StringAnswerMixin, AdjudicatorFeedbackAnswer):
 
     class Meta(AdjudicatorFeedbackAnswer.Meta):
         verbose_name = _("adjudicator feedback string answer")
         verbose_name_plural = _("adjudicator feedback string answers")
 
 
-class AdjudicatorFeedbackManyAnswer(AdjudicatorFeedbackAnswer):
-    ANSWER_TYPE = list
-    answer = ArrayField(base_field=models.TextField())
+class AdjudicatorFeedbackManyAnswer(ArrayAnswerMixin, AdjudicatorFeedbackAnswer):
 
     class Meta(AdjudicatorFeedbackAnswer.Meta):
         verbose_name = _("adjudicator feedback multiple select answer")
